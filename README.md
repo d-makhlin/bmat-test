@@ -24,4 +24,4 @@ test problem with asynchronous csv files processing
 
    Save the task ID that you recieve
 
-4. Send GET '0.0.0.0:8080/download' request with the body {'task': <your_task_id>}, header 'Content-type: application/json'
+4. Send GET '0.0.0.0:8080/download' request with the body {"task": "<your_task_id>"}, header 'Content-type: application/json'
