@@ -14,7 +14,7 @@ test problem with asynchronous csv files processing
 
    $ docker-compose up -d
 
-3. Send your csv file on '0.0.0.0:8080/process'
+3. Send your csv file on POST '0.0.0.0:8080/process'
 
    Attach your file as a form data in a field 'file'
 
@@ -22,4 +22,4 @@ test problem with asynchronous csv files processing
 
    Save the task ID that you recieve
 
-4. Send '0.0.0.0:8080/download' request with {'task': <your_task_id>}
+4. Send GET '0.0.0.0:8080/download' request with {'task': <your_task_id>}
