@@ -12,6 +12,8 @@ test problem with asynchronous csv files processing
 
 2. Start the project via docker
 
+   $ docker-compose build
+
    $ docker-compose up -d
 
 3. Send your csv file on POST '0.0.0.0:8080/process'
