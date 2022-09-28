@@ -2,11 +2,13 @@ import asyncio
 import os
 from collections import defaultdict
 from typing import Dict
-
+from logging import getLogger
 import aiofiles
 import aioredis
 from aiocsv import AsyncDictWriter, AsyncReader
 from aiohttp.multipart import MultipartReader
+
+logger = getLogger(__file__)
 
 
 class ProcessService:
@@ -32,9 +34,9 @@ class ProcessService:
         path = os.path.join(os.path.dirname(__file__), '..',
                             'files', f'input_{task_id}.csv')
 
-        r_host = os.environ.get('REDIS_HOST', 'redis')
         # connect to redis
-        redis = await aioredis.from_url(f'{r_host}://', port=6379)
+        r_host = os.environ.get('REDIS_HOST', 'localhost')
+        redis = await aioredis.from_url(f'redis://{r_host}', port=6379)
 
         data = defaultdict(int)
         async with aiofiles.open(path, mode="r", encoding="utf-8", newline="\r\n") as afp:
@@ -50,6 +52,8 @@ class ProcessService:
                 if len(data) > 100_000:  # If the dict is large, put data into redis and clean it
                     await ProcessService._store_data_in_redis(data)
                     data = {}
+
+        await ProcessService._store_data_in_redis(redis, data)
 
         # write stored in redis data into file asynchronously
         async with aiofiles.open(ProcessService._get_output_file_name(), mode="w", encoding="utf-8", newline="") as afp:
@@ -80,6 +84,7 @@ class ProcessService:
         """
         Puts data from python dict to redis
         """
+        logger.info('data is getting stored in redis')
         for k, v in data.items():
             old_v = await conn.exists(k)
             old_v = int(v) if v else 0
