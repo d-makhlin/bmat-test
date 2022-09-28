@@ -36,8 +36,9 @@ async def process(request: web_request.Request):
     field = await reader.next()
     assert field.name == 'file'
 
-    task = asyncio.create_task(ProcessService.process_csv(field))
     task_name = uuid4()
+    await ProcessService.save_file(field, task_name)
+    task = asyncio.create_task(ProcessService.process_csv(task_name))
     task.set_name(task_name)
     return web.json_response({'task': str(task_name)})
 
