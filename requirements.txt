@@ -1,2 +1,5 @@
+aiocsv==1.2.2
 aiohttp==3.8.3
+aiofiles==22.1.0
+aioredis==2.0.1
 async_generator==1.10
